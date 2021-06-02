@@ -13,14 +13,17 @@ const courseSchema = new Schema({
         type: String,
         maxlength: 1000,
     },
-    // tutor: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: Tutor,
-    //     required: true,
-    // },
+    tutor: {
+        type: Schema.Types.ObjectId,
+        ref: 'Tutor',
+        required: true
+    },
+    banner: {
+        type: String
+    },
     subject: {
         type: Schema.Types.ObjectId,
-        ref: Subject
+        ref: 'Subject'
     },
     tags: {
         type: [String],

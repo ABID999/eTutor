@@ -1,0 +1,64 @@
+<%- include('../partials/header.ejs') -%>
+<%- include('./partials/tutorNav.ejs') -%>
+
+<h2 class="text-center text-center">Class Details</h2>
+
+<div class="container mt-2">
+    <div class="card p-3">
+        <div class="row justify-content-around">
+            <div class="col-sm-4">
+
+                <img class="img-fluid" src="/<%= classDetails.banner || 'images/placeholder.jpg'%>" alt="">
+
+                <div class="mb-3">
+                    <h2><%= classDetails.title %></h2>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                <div class="mb-3">
+                    <p><%= classDetails.description%></p>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fee" class="form-label">Tutor: </label><span> <%= tutor.name%></span>
+                </div>
+
+                <div class="mb-3">
+                    <labelclass="form-label">Subject :</label>
+                    <span><%= classDetails.subject || 'none' %></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fee" class="form-label">Fee : </label>
+                    <h4 class="d-inline"><%= classDetails.fee %></h4> tk/hr
+                </div>
+
+                <div class="mb-3">
+                    <label for="fee" class="form-label">Schedule: </label>
+                    <p><%= classDetails.schedule %></p>
+                </div>
+
+                <div class="mb-3">
+                    <label for="tags" class="form-label">Class tags: </label>
+
+                        <% for(let tag of classDetails.tags){ %> 
+                            <span class="badge bg-light text-dark"><%= tag %> </span>
+                        <% } %> 
+
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-warning"><a class="link-light text-decoration-none" href="/tutor/edit_class/<%= classDetails._id %>">Edit Class</a></button>
+            <button class="btn btn-danger"><a class="link-light text-decoration-none" href="/tutor/delete_class/<%= classDetails._id %>">Delete Class</a> </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<%- include('../partials/footer.ejs') %>

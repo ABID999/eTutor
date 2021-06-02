@@ -1,0 +1,83 @@
+<%- include('../partials/header.ejs') -%>
+<%- include('./partials/tutorNav.ejs') -%>
+
+<% if(alert.message){ %>
+    <div class="alert alert-<%=alert.status%>  container alert-dismissible fade show" role="alert">
+    <%= alert.message %> 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>  
+
+
+<h2 class="text-center text-center">Tutor Profile</h2>
+
+<div class="container mt-5">
+    <form action="/tutor/edit_profile" method="POST" enctype="multipart/form-data">
+        <div class="row justify-content-around">
+            <div class="col-sm-4">
+                <% if(user.profilePicture){ %>
+                    <img class="img-fluid" src="/<%= user.profilePicture %>">
+                <% } else { %>
+                    <img class="img-fluid" src="/images/profile_placeholder.png" alt="">
+                <% } %> 
+                <div class="mb-3">
+                    <label for="profile-picture" class="form-label">Change Profile Picture</label>
+                    <input class="form-control" name="profile-picture" type="file" id="profile-picture">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full name</label>
+                    <input type="text" class="form-control" name="name" id="name" value="<%= user.name && user.name %>">
+                </div>
+                <p>Email:</p>
+                <h5><%= user.email %> </h5>
+                <div class="mb-3">
+                    <label for="bio" class="form-label">Bio</label>
+                    <textarea class="form-control" name="bio" id="bio" rows="3"><%= user.bio && user.bio %></textarea> 
+                </div>
+                <div class="mb-3">
+                    <label for="qualifications" class="form-label">Qualifications</label>
+                    <input type="text" class="form-control" name="qualifications" id="qualifications" value="<%= user.qualifications && user.qualifications %>">
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-lg btn-success">Update</button>
+        </div>
+    </form>
+
+    <div class="col-md-6">
+        <p>
+            <a  data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Change Password
+            </a>
+        </p>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <form action="/tutor/change_password" method="POST">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="text" class="form-control" name="currentPassword" id="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="text" class="form-control" name="newPassword" id="newPassword" placeholder="at least 4 characters long" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                        <input type="text" class="form-control" name="confirmNewPassword" id="confirmNewPassword" placeholder="re-enter new password" required>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-success">Change Password</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<%- include('../partials/footer.ejs') %>

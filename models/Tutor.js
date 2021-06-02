@@ -1,8 +1,7 @@
 const {Schema, model} = require('mongoose')
-const passportLocalMongoose = require('passport-local-mongoose')
 
 const Course = require('./Course')
-const Class =require('./Class')
+const Class = require('./Class')
 
 const tutorSchema = new Schema({
     name: {
@@ -29,15 +28,17 @@ const tutorSchema = new Schema({
         trim: true,
         maxlenght: 200,
     },
-
+    profilePicture: {
+        type: String,
+    },
     courses: [{
         type: Schema.Types.ObjectId,
-        ref: Course
+        ref: 'Course'
     }],
 
     classes: [{
         type: Schema.Types.ObjectId,
-        ref: Class
+        ref: 'Class'
     }],
 
 }, {timestamps: true})

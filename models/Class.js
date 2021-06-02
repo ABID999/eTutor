@@ -13,29 +13,31 @@ const classSchema = new Schema({
     description: {
         type: String,
         maxlength: 1000,
+        required:true,
     },
-    // tutor: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: Tutor,
-    //     required: true,
-    // },
+    tutor: {
+        type: Schema.Types.ObjectId,
+        ref: 'Tutor',
+        required: true,
+    },
+    banner: {
+        type: String
+    },
     subject: {
         type: Schema.Types.ObjectId,
-        ref: Subject,
-        required: true
+        ref: Subject
     },
     tags: {
-        type: [String],
-        required: true
+        type: [String]
     },
     fee: {
-        type: Number,
-        required: true,
+        type: Schema.Types.Decimal128,
         required: true
     },
     schedule: [{
         day: String,
-        time: String,
+        startTime: String,
+        endTime: String
     }],
 }, {timestamps: true})
 

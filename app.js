@@ -68,17 +68,17 @@ app.get('/', (req, res)=>{
     })
 })
 
-app.use( (req,res, next) => {
-    let error = new Error('404 page not found')
-    error.status = 404
-    next(error)
-})
-app.use( (error, req, res, next) => {
-    if(error.status === 404){
-        return res.render('error/404.ejs')
-    }
-    //return res.render('error/500.ejs')
-})
+// app.use( (req,res, next) => {
+//     let error = new Error('404 page not found')
+//     error.status = 404
+//     next(error)
+// })
+// app.use( (error, req, res, next) => {
+//     if(error.status === 404){
+//         return res.render('error/404.ejs')
+//     }
+//     //return res.render('error/500.ejs')
+// })
 
 const PORT = process.env.PORT || 8080
 app.listen(PORT, ()=>{
