@@ -32,7 +32,10 @@ const courseSchema = new Schema({
     fee: {
         type: Number,
         required: true,
-    }
+    },
+    videos: [
+        {title: String, path: String}
+    ],
 }, {timestamps: true})
 
 const Course = model('Course', courseSchema)

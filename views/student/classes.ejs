@@ -1,0 +1,46 @@
+<%- include('../partials/header.ejs') -%>
+<%- include('./partials/studentNav.ejs') %> 
+<%- include('../partials/alert.ejs') -%>
+
+<h2 class="text-center mb-3"><%= title.header %> </h2>
+
+
+    <div class="container">
+
+        <div class="col-md-4 m-auto">
+            <form method="GET" action="/student/search_classes">
+            <div class="input-group mb-5 col-md-4 m-auto">
+                
+                    <input type="text" name="search" class="form-control" placeholder="Search Classes" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+                
+            </div>
+        </form>
+        </div>
+
+        <div class="row justify-content-around"> 
+
+            
+
+            <% if(classes.length === 0) {%>
+                <h3 class="text-center">No classes found.</h3>
+            <% } else { %>  
+                <% for(let classDetails of classes){ %> 
+                    <div class="col-md-4 mb-5">
+                        <div class="card m-auto" style="width: 18rem;">
+                            <img src="/<%= classDetails.banner || 'images/placeholder.jpg'%> " class="card-img-top img-fluid" style="width: 286px; height: 160px;" alt="...">
+                            <div class="card-body">
+                            <h5 class="card-title"><%= classDetails.title %> </h5>
+                            <p class="card-text"><%= classDetails.description.substring(0,120) %> </p>
+                            <p>Taught by: <span><%= classDetails.tutorName %></span></p>
+                            <p><b><%= classDetails.fee %></b> tk/hr</p>
+                            <a href="/student/class/<%= classDetails._id %> " class="btn btn-sm btn-primary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                <% } %> 
+            <% } %> 
+        </div>
+    </div>
+
+<%- include('../partials/footer.ejs') -%>

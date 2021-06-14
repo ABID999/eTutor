@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script>
+    const ROOM_ID = "<%= liveClass.roomId %>"
+  </script>
+  <script defer src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
+  <script src="/socket.io/socket.io.js" defer></script>
+  <script src="/scripts/room.js" defer></script>
+  <title>Live Class</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles/style.css">
+  <style>
+    #video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 300px);
+      grid-auto-rows: 300px;
+    }
+    
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+
+  <div id="class-container" class="bg-secondary">
+
+    <div class="class-header border border-dark d-flex align-items-center justify-content-center">
+      <h2 class="text-light"><%= liveClass.title %> </h2>
+    </div>
+
+    <div class="row video-container">
+      <div id="main-video" class="col-md-8 bg-dark d-flex flex-column align-items-center justify-content-center">
+        <h6 class="text-light"><%= liveClass.participantName %> </h6>
+        <div id="video-grid-2" class="bg-info"></div>
+      </div>
+
+      <div id="my-video" class="col-md-4 d-flex flex-column align-items-center justify-content-center">
+        <p class="h6 text-light"><%= liveClass.userName%> </p>
+        <div id="video-grid"></div>
+      </div>
+    </div>
+
+    <div class="class-controls d-flex justify-content-center align-items-center">
+      <button onclick="muteUnmute()" id="mute-btn" class="btn btn-success mx-1"><i class="bi bi-mic-fill"></i> <span id="mute-state">Mute</span> Audio</button>
+      <button onclick="playStop()" id="play-btn" class="btn btn-warning mx-1"><i class="bi bi-camera-video-fill"></i> <span id="play-state">Mute</span> Video</button>
+      <a href="/<%= liveClass.userType %>/enrolled_classes" class="btn btn-danger mx-1"> <i class="bi bi-telephone-fill"></i> Leave Class</a>
+   
+    </div>
+
+  </div>  
+</body>
+</html>

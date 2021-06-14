@@ -1,41 +1,52 @@
 <%- include('../partials/header.ejs') -%>
 
 
-<div class="bg-grey-lighter min-h-screen flex flex-col">
-    <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
-        <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-            <h1 class="mb-8 text-3xl text-center">Tutor Login</h1>
+<div class="mt-5">
+   
+    <div class="container mt-5">
+        <h2 class="mb-8 text-center">E-Tutor</h3>
+        <div class="card p-5 col-md-5 m-auto">
+            <h3 class="mb-8 text-center">Tutor Login</h3>
 
             <form action="/tutor/login" method="POST">
 
-                <input type="text" class="block border border-grey-light w-full p-3 rounded mb-4 <%= error.email ? 'border-red-500' : '' %> " name="email"
-                    placeholder="Email" value="<%= value.email && value.email %>"/>
-                <div class="text-sm text-red-500">
-                    <%= error.email && error.email %> 
+                <div class="mb-3">
+                    <label class="form-label">Full name</label>
+                    <input type="text"
+                        class="form-control <%= error.email ? 'border-red-500' : '' %> "
+                        name="email" placeholder="Email" value="<%= value.email && value.email %>" />
+                    <div class="link-danger">
+                        <%= error.email && error.email %>
+                    </div>
                 </div>
-
-                <input type="password" class="block border border-grey-light w-full p-3 rounded mb-4  <%= error.password ? 'border-red-500' : '' %>"  name="password"
-                    placeholder="Password" value="<%= value.password && value.password %>" />
-
-
-                <button type="submit"
-                    class="w-full text-center py-3 rounded bg-green-500 text-white hover:bg-green-dark focus:outline-none my-1">Sign
-                    In</button>
+               <div class="mb-3">
+                    <label class="form-label">Full name</label>
+                    <input type="password"
+                        class="form-control<%= error.password ? 'border-red-500' : '' %>"
+                        name="password" placeholder="Password" value="<%= value.password && value.password %>" />
+                </div>
+                <div class="text-center">
+                <button type="submit" class="btn btn-success">Sign In</button>
+                </div>
             </form>
 
+
+            <div class="text-grey-dark mt-6">
+                Do not have an account?
+                <a class="no-underline border-b border-blue text-blue" href="/tutor/register">
+                    Sign up now!
+                </a>
+            </div>
+
         </div>
 
-        <div class="text-grey-dark mt-6">
-            Do not have an account?
-            <a class="no-underline border-b border-blue text-blue" href="/tutor/register">
-                Sign up now!
-            </a>
-        </div>
+        
     </div>
 </div>
 
-<%- include('../partials/footer.ejs') %> 
+<%- include('../partials/footer.ejs') %>
 
 
 </body>
+
 </html>

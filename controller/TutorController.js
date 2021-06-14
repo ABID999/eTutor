@@ -5,7 +5,10 @@ const {
 } = require('express-validator')
 
 const Tutor = require("../models/Tutor")
+const Student = require("../models/Student")
+const EnrolledClass = require("../models/EnrolledClass")
 const Class = require('../models/Class')
+const Course = require('../models/Course')
 const errorFormatter = require('../utils/validationFormatter')
 
 //const passport = require('../passport')
@@ -86,6 +89,7 @@ exports.loginPostController = async (req, res, next) => {
         }
         req.session.isLoggedIn = true
         req.session.user = tutor
+        req.session.userType = 'tutor'
         req.session.save( err => {
             if(err){
                 console.log("error saving session" + err)
@@ -354,5 +358,143 @@ exports.changePasswordPostController = async (req, res, next) => {
         console.log(e)
         return res.render('tutor/editProfile', {alert: {message: 'Erron changing password', status: 'danger'}})
     }
+}
+
+
+exports.enrolledClassesGetController = async (req, res, next) => {
+
+    try{
+        let tutor = req.user._id
+        let enrolledClasses = await EnrolledClass.find({tutor: tutor})
+        console.log(enrolledClasses)
+        for(let enrolledClass of enrolledClasses){
+            let classDetails = await Class.findOne({_id: enrolledClass.enrolledClass})
+            let tutor = await Tutor.findOne({_id: enrolledClass.tutor})
+            let attendee = await Student.findOne({_id: enrolledClass.studnet})
+            enrolledClass.attendee = attendee
+            enrolledClass.tutorName = tutor.name;
+            enrolledClass.title = classDetails.title;
+        }
+
+        res.render('tutor/enrolledClasses',{enrolledClasses, alert:{}})        
+
+    }catch(e){
+        console.log(e)
+        res.render('tutor/enrolledClasses', {enrolledClasses:{},alert: {message:'Failed to get classes for this user'}})
+    }
 
 }
+
+
+exports.cancelClassGetController = async (req, res, next) => {
+
+    let enrolledClassId = req.params.id;
+    
+    try{
+        let deletedEnrolledClass = await EnrolledClass.findOneAndDelete({_id: enrolledClassId})
+        res.redirect('/tutor/enrolled_classes')
+    }catch(e){
+        console.log(e);
+        res.render('tutor/enrolledClasses', {enrolledClasses:{}, alert: {message:'Failed to cancel class schedule'}})
+    }
+}
+
+
+exports.joinLiveClassController = async (req, res, next) => {
+    let enrolledClassId = req.params.id
+    try{
+        let enrolledClass = await EnrolledClass.findOne({_id: enrolledClassId}) 
+        let roomId = enrolledClass.roomId
+        let tutor = enrolledClass.tutor
+        if( tutor.toString() == req.user._id.toString()){
+            res.redirect(`/room/${roomId}`)
+        }
+        res.redirect('/tutor/enrolled_classes')
+    }catch(e){
+        console.log(e)
+        res.redirect('/tutor/enrolled_classes')
+    }
+}
+
+exports.coursesGetController = async (req, res, next) => {
+
+    try{
+        let courses = await Course.find({tutor: req.user._id})
+        res.render('tutor/courses',{courses, error:{}})        
+
+    }catch(e){
+        console.log(e)
+        res.render('tutor/courses', {error: {message:'Failed to get courses for this user'}})
+    }
+
+
+}
+
+exports.courseDetailsGetController = async (req, res, next) => {
+
+    let courseId = req.params.id;
+    
+    try{
+        let courseDetails = await Course.findOne({_id: courseId})
+        res.render('tutor/courseDetails', {courseDetails})
+    }catch(e){
+        console.log(e);
+        res.redirect('/tutor/courses')
+    }
+
+
+}
+
+
+exports.createCourseGetController = async (req, res, next) => {
+    res.render('tutor/createCourse')
+}
+
+
+
+exports.createCoursePostController = async (req, res, next) => {
+    let {title, description, fee, tags} = req.body
+
+    if(tags){
+        tags = tags.split(',')
+        tags = tags.map(tag => {return tag.trim()})
+    }
+    let banner;
+    let videos =[];
+
+    if(req.files){
+        console.log(req.files)
+        if(req.files['course-banner'][0]){
+            banner = `uploads/banner/${req.files['course-banner'][0].filename}`
+        }else{
+            banner = null
+        }
+        
+        req.files['course-videos'].forEach(element => {
+            videos.push({title:`${element.originalname}`, path: `uploads/course/${element.filename}`})
+        });
+    }
+
+    let newCourse = new Course({
+        title,
+        description,
+        tags,
+        tutor: req.user._id,
+        banner,
+        fee,
+        videos
+    })
+
+    try{
+        let createdCourse= await newCourse.save()
+        let tutor = await Tutor.findOneAndUpdate(
+            {_id: req.user._id},
+            {$push: {'courses': createdCourse._id}}
+        )
+        res.redirect('/tutor/classes')
+    }catch(e){
+        console.log(e)
+        res.render('tutor/createCourse')
+    }
+}
+

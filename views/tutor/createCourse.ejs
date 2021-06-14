@@ -1,3 +1,58 @@
 <%- include('../partials/header.ejs') -%>
+<%- include('./partials/tutorNav.ejs') -%>
 
-<h1 class="text-center">Create Course</h1>
+<h1 class="text-center text-center">Create Course</h1>
+
+<div class="container mt-5">
+    <form action="/tutor/create_course" method="POST" enctype="multipart/form-data">
+        <div class="row justify-content-around">
+            <div class="col-sm-4">
+
+                <img class="img-fluid" src="/images/placeholder.jpg" alt="">
+
+                <div class="mb-3">
+                    <label for="class-banner" class="form-label">Upload Course Banner Picture</label>
+                    <input class="form-control" name="course-banner" type="file" id="course-banner">
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Course Title</label>
+                    <input type="text" class="form-control" name="title" placeholder="Choose a suitable title for your course" id="title">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Course Description</label>
+                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="Describe what the course is about. What will be taught and how is this different from other classes"></textarea> 
+                </div>
+
+                <div class="mb-3">
+                    <label for="fee" class="form-label">Fee</label>
+                    <input type="number" class="form-control" name="fee" id="fee">
+                </div>
+
+                <div class="mb-3">
+                    <label for="tags" class="form-label">Enter 3 tags separated by (,) coma</label>
+                    <input type="text" class="form-control" name="tags" id="tags" placeholder="e.g. programming, html, web-development">
+                </div>
+
+                <div class="mb-3">
+                    <label for="course-videos" class="form-label">Upload the video recordings of your course</label>
+                    <input type="file" class="form-control" id="course-videos" name="course-videos" multiple><br><br>
+                </div>
+
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-lg btn-success">Create Course</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+<%- include('../partials/footer.ejs') %>

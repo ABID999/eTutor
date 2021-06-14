@@ -1,0 +1,87 @@
+<%- include('../partials/header.ejs') -%>
+<%- include('./partials/studentNav.ejs') -%>
+<%- include('../partials/alert.ejs') -%>
+
+
+
+    <div class="container">
+
+        <h2 class=" mb-3">Enrolled Classes</h2> 
+        <div class="row"> 
+            <% if(enrolledClasses.length === 0) {%>
+                <h5 class="text-center">The classes you are enrolled in will be visible here. Currently there are none.</h5>
+            <% } else { %>  
+                <% let i= 0;  %> 
+                <% for(let classDetails of enrolledClasses){ %> 
+                    <% i++ %> 
+                    <div class="col-md-5 mb-3">
+                        <div class="card border-dark mb-3">
+                            <div class="card-header">Today</div>
+                            <div class="card-body">
+                                <h5 class="card-title"><%= classDetails.title %> </h5>
+                                <p>Attendee: <span><%= classDetails.attendee %></span></p>
+                                <p>Taught by: <span><%= classDetails.tutorName %></span></p>
+                                <p>Scheduled time: <span><%= classDetails.schedule%></span></p>
+                                <div>   
+                                    <a href="/student/enrolled_classes" class="btn btn-sm btn-primary">View</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                <% } %> 
+            <% } %>     
+        </div>
+        <a class="btn btn-sm btn-outline-primary" href="/student/enrolled_classes">Show all enrolled classes  <i class="bi bi-arrow-right"> </i></a>
+
+
+        <div class="row justify-content-around mt-5"> 
+            <h2 class=" mb-3">New Classes</h2>
+
+            <% if(classes.length === 0) {%>
+                <h3 class="text-center">No classes found.</h3>
+            <% } else { %>  
+                <% for(let classDetails of classes){ %> 
+                    <div class="col-md-4 mb-3">
+                        <div class="card m-auto" style="width: 18rem;">
+                            <img src="/<%= classDetails.banner || 'images/placeholder.jpg'%> " class="card-img-top img-fluid" style="width: 286px; height: 160px;" alt="...">
+                            <div class="card-body">
+                            <h5 class="card-title"><%= classDetails.title %> </h5>
+                            <p class="card-text"><%= classDetails.description.substring(0,120) %> </p>
+                            <p>Taught by: <span><%= classDetails.tutorName %></span></p>
+                            <p><b><%= classDetails.fee %></b> tk/hr</p>
+                            <a href="/student/class/<%= classDetails._id %> " class="btn btn-sm btn-primary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                <% } %> 
+            <% } %> 
+        </div>
+        <a class="btn btn-sm btn-outline-primary" href="/student/classes">View all classes <i class="bi bi-arrow-right"> </i></a>
+
+
+        <div class="row justify-content-around mt-5"> 
+            <h2 class=" mb-3">Top Tutors</h2>
+
+            <% if(tutors.length === 0) {%>
+                <h3 class="text-center">No tutors to display.</h3>
+            <% } else { %>  
+                <% for(let tutor of tutors){ %> 
+                    <div class="col-md-4 mb-3">
+                        <div class="card m-auto text-center p-3" style="width: 18rem;">
+                            <img src="/<%= tutor.profilePicture || 'images/profile_placeholder.jpg'%> " class="card-img-top img-fluid rounded-circle m-auto" style="width: 160px; height: 160px;" alt="...">
+                            <div class="card-body">
+                            <h5 class="card-title"><%= tutor.name %> </h5>
+                            <p class="card-text"><%= tutor.bio.substring(0,120) %> </p>
+                            <p><b><%= tutor.qualifications %></b></p>
+                            <a href="/student/tutor_details/<%= tutor._id %> " class="btn btn-sm btn-primary">Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                <% } %> 
+            <% } %> 
+        </div>
+        
+    </div>
+
+<%- include('../partials/footer.ejs') -%>

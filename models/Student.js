@@ -1,7 +1,5 @@
-//Name, email, password profile
-
 const {Schema, model} = require('mongoose')
-const passportLocalMongoose = require('passport-local-mongoose')
+
 
 
 const studentSchema = new Schema({
@@ -18,14 +16,13 @@ const studentSchema = new Schema({
         maxlength: 50
     },
     password: {
-        type: String, 
-        maxlength: 50,
+        type: String,
+        required:true
     }
 },  {
     timestamps: true
 })
 
-studentSchema.plugin(passportLocalMongoose, {usernameField: 'email'});
 
 const Student = model('Student', studentSchema)
 

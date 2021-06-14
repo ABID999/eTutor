@@ -1,3 +1,39 @@
 <%- include('../partials/header.ejs') -%>
+<%- include('./partials/tutorNav.ejs') %> 
 
-<h1 class="text-center">My courses</h1>
+<% if(error.message){ %>
+    <div class="alert alert-danger container alert-dismissible fade show" role="alert">
+    <%= error.message %> 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>  
+
+<h1 class="text-center mb-5">My courses</h1>
+
+
+    <div class="container">
+        <div class="row justify-content-around"> 
+            <% if(courses.length === 0) {%>
+                <h3 class="text-center">No classes found. Create classes to see them here.</h3>
+            <% } else { %>  
+                <% for(let classDetails of courses){ %> 
+                    <div class="col-md-4 mb-5">
+                        <div class="card m-auto" style="width: 18rem;">
+                            <img src="/<%= classDetails.banner || 'images/placeholder.jpg'%> " class="card-img-top img-fluid" style="width: 286px; height: 160px;" alt="...">
+                            <div class="card-body">
+                            <h5 class="card-title"><%= classDetails.title %> </h5>
+                            <p class="card-text"><%= classDetails.description.substring(0,120) %> </p>
+                            <p><b><%= classDetails.fee %></b> tk</p>
+                            <a href="/tutor/course/<%= classDetails._id %> " class="btn btn-sm btn-primary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                <% } %> 
+            <% } %> 
+        </div>
+    </div>
+<div class="text-center mt-5">
+    <button class="btn btn-lg btn-success"><a class="link-light text-decoration-none" href="/tutor/create_course">Add New Course</a></button>
+</div>
+
+<%- include('../partials/footer.ejs') -%>

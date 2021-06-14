@@ -1,0 +1,76 @@
+<%- include('../partials/header.ejs') -%>
+<%- include('./partials/studentNav.ejs') %> 
+
+<%- include('../partials/alert.ejs') -%>
+
+<h2 class="text-center mb-3">Enrolled Classes</h2>
+
+
+    <div class="container">
+
+        <div class="row "> 
+
+            
+
+            <% if(enrolledClasses.length === 0) {%>
+                <h5 class="text-center">The classes you are enrolled in will be visible here. Currently there are none.</h5>
+            <% } else { %>  
+                <% let i= 0;  %> 
+                <% for(let classDetails of enrolledClasses){ %> 
+                    <% i++  %> 
+                    <div class="col-md-5 mb-5">
+                        <div class="card border-dark mb-3">
+                            <div class="card-header">Today</div>
+                            <div class="card-body">
+                            <h5 class="card-title"><%= classDetails.title %> </h5>
+                            <p>Attendee: <span><%= classDetails.attendee %></span></p>
+                            <p>Taught by: <span><%= classDetails.tutorName %></span></p>
+                            <p>Scheduled time: <span><%= classDetails.schedule%></span></p>
+                            <div>   
+                                <a href="/student/join_class/<%= classDetails._id %> " class="btn btn-sm btn-success">Join</a>
+                                <button data-bs-toggle="modal" data-bs-target="#modal<%= i %>" class="btn btn-sm btn-warning">Cancel Class</a>
+                            </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+
+
+
+
+                    <div class="modal fade" id="modal<%= i %>" tabindex="-1" aria-labelledby="modal<%= i %>Label" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            
+                            <div class="modal-body">
+                                <p class="fs-4 text text-primary">Do you really wish to unenroll from the class <%= classDetails.title %></p>
+                                <p>You can request for a refund by sending us an email at example@etutor.com</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal<%= i %>">Close</button>
+                              <button type="button" class="btn btn-primary">
+                                  <a class="link-light text-decoration-none"href="/student/unenroll/<%= classDetails._id %> ">Un-enroll from class</a>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+
+
+
+                <% } %> 
+            <% } %> 
+        </div>
+    </div>
+
+
+    
+
+
+
+<%- include('../partials/footer.ejs') -%>

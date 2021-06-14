@@ -1,0 +1,79 @@
+<%- include('../partials/header.ejs') -%>
+<%- include('./partials/studentNav.ejs') -%>
+
+
+<div class="container mt-5">
+    <div class="row justify-content-around my-5">
+        <div class="col-sm-4">
+            <% if(tutor.profilePicture){ %>
+                <img class="img-fluid rounded-circle" src="/<%= tutor.profilePicture %>">
+            <% } else { %>
+                <img class="img-fluid rounded-circle" src="/images/profile_placeholder.png" alt="">
+            <% } %> 
+        </div>
+        <div class="col-sm-4 d-flex flex-column justify-content-center">
+            <div class="mb-3">
+                <label>Name:</label>
+                <% if(tutor.name){  %> 
+                    <h5><%= tutor.name %>  </h5>
+                <% }else{ %>
+                    <p>No name added</p>
+                    <a href="/tutor/edit_profile" class="link-primary">Click here to add name</a>
+                <% } %> 
+            </div>
+
+            <div class="mb-3">
+                <label>Email:</label>
+                <h5><%= tutor.email %></h5>
+            </div>
+
+            <div class="mb-3">
+                <label>Bio:</label>
+                <% if(tutor.bio){  %> 
+                    <h5><%= tutor.bio %>  </h5>
+                <% }else{ %>
+                    <p>No bio added <a href="/tutor/edit_profile" class="link-primary">add bio</a></p>
+                <% } %> 
+            </div>
+
+            <div class="mb-3">
+                <label>Qualifications:</label>
+                <% if(tutor.qualifications){  %> 
+                    <h5><%= tutor.qualifications %>  </h5>
+                <% }else{ %>
+                    <p>No qualifications added <a href="/tutor/edit_profile" class="link-primary">add qualifications</a></p>        
+                <% } %>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row justify-content-around mt-5"> 
+        <h2 class="text-center mb-4">Classes of this tutor</h2>
+
+        <% if(classes.length === 0) {%>
+            <h3 class="text-center">No classes found.</h3>
+        <% } else { %>  
+            <% for(let classDetails of classes){ %> 
+                <div class="col-md-4 mb-3">
+                    <div class="card m-auto" style="width: 18rem;">
+                        <img src="/<%= classDetails.banner || 'images/placeholder.jpg'%> " class="card-img-top img-fluid" style="width: 286px; height: 160px;" alt="...">
+                        <div class="card-body">
+                        <h5 class="card-title"><%= classDetails.title %> </h5>
+                        <p class="card-text"><%= classDetails.description.substring(0,120) %> </p>
+                        <p>Taught by: <span><%= classDetails.tutorName %></span></p>
+                        <p><b><%= classDetails.fee %></b> tk/hr</p>
+                        <a href="/student/class/<%= classDetails._id %> " class="btn btn-sm btn-primary">Details</a>
+                        </div>
+                    </div>
+                </div>
+            <% } %> 
+        <% } %> 
+    </div>
+
+</div>
+
+
+
+
+<%- include('../partials/footer.ejs') %>

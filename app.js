@@ -1,20 +1,22 @@
 const express = require('express')
+const app = express()
+
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+
 const morgan = require('morgan')
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-const MongoDBStore = require('connect-mongodb-session')(session);
-//const passport = require('passport')
-//const {Strategy} = require('passport-local')
+const MongoDBStore = require('connect-mongodb-session')(session)
 
-const Student = require('./models/Student')
-const Tutor = require('./models/Tutor')
-const auth = require('./routes/auth')
+const studentRoutes = require('./routes/studentRoutes')
 const tutorRoutes = require('./routes/tutorRoutes')
-const {bindTutorWithRequest} = require('./middleware/authMiddleWare')
+const roomRoutes = require('./routes/roomRoutes')
+const {bindUserWithRequest} = require('./middleware/authMiddleWare')
 const setLocals = require('./middleware/setLocals')
-//const passport = require('./passport')
+
 
 //mongoose.Promise = global.Promise
 const MONGODB_URI = 'mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb'
@@ -32,7 +34,7 @@ mongoose.connect(MONGODB_URI, {useNewUrlParser : true, useUnifiedTopology: true}
 
 
 
-const app = express()
+
 
 app.set('view engine', 'ejs')
 app.set('views', 'views')
@@ -48,10 +50,9 @@ const middleware = [
         saveUninitialized: false,
         store: store
     }),
-    bindTutorWithRequest(),
+    bindUserWithRequest(),
     setLocals()
-    //passport.initialize(),
-    //passport.session(),
+
 ]
 
 app.use(cookieParser());
@@ -59,14 +60,28 @@ app.use(cookieParser());
 
 app.use(middleware)
 
-app.use('/auth', auth);
+app.use('/student', studentRoutes)
 app.use('/tutor', tutorRoutes)
+app.use('/room', roomRoutes)
 
 app.get('/', (req, res)=>{
-    res.json({
-        message: 'Hello World'
+    res.render('landingPage.ejs')
+})
+  
+io.on('connection', socket => {
+    socket.on('join-room', (roomId, userId) => {
+        socket.join(roomId)
+        socket.to(roomId).broadcast.emit('user-connected', userId)
+
+        socket.on('disconnect', () => {
+        socket.to(roomId).broadcast.emit('user-disconnected', userId)
+        })
     })
 })
+  
+
+
+
 
 // app.use( (req,res, next) => {
 //     let error = new Error('404 page not found')
@@ -81,6 +96,8 @@ app.get('/', (req, res)=>{
 // })
 
 const PORT = process.env.PORT || 8080
-app.listen(PORT, ()=>{
+
+
+server.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`)
 })

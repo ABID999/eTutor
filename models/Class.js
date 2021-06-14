@@ -41,6 +41,19 @@ const classSchema = new Schema({
     }],
 }, {timestamps: true})
 
+classSchema.index({
+    title: 'text',
+    description: 'text',
+    tags: 'text'
+}, {
+    weights: {
+        title: 5,
+        tags: 4,
+        description: 1
+    }
+})
+
+
 const Class = model('Class', classSchema)
 
 module.exports = Class
