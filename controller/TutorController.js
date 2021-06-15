@@ -436,7 +436,7 @@ exports.courseDetailsGetController = async (req, res, next) => {
     
     try{
         let courseDetails = await Course.findOne({_id: courseId})
-        res.render('tutor/courseDetails', {courseDetails})
+        res.render('tutor/viewCourse', {courseDetails})
     }catch(e){
         console.log(e);
         res.redirect('/tutor/courses')
@@ -491,7 +491,7 @@ exports.createCoursePostController = async (req, res, next) => {
             {_id: req.user._id},
             {$push: {'courses': createdCourse._id}}
         )
-        res.redirect('/tutor/classes')
+        res.redirect('/tutor/courses')
     }catch(e){
         console.log(e)
         res.render('tutor/createCourse')
