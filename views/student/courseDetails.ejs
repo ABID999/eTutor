@@ -1,0 +1,119 @@
+<%- include('../partials/header.ejs') -%>
+<%- include('./partials/studentNav.ejs') -%>
+
+<h3 class="text-center text-center">Course Details</h3>
+
+<div class="container mt-5">
+        <div class="row justify-content-around">
+            <div class="col-sm-4">
+
+                <% if(courseDetails.banner){ %>
+                    <img class="img-fluid" src="/<%= courseDetails.banner %>">
+                <% } else { %>
+                    <img class="img-fluid" src="/images/profile_placeholder.png" alt="">
+                <% } %> 
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Course Title</label>
+                    <h5><%= courseDetails.title %></h5>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4">
+
+                
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Course Description:</label>
+                    <p><%= courseDetails.description %>  </p>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fee" class="form-label">Tutor: </label><span> <%= tutor.name%></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fee" class="form-label">Fee</label>
+                    <h4 class="d-inline"><%= courseDetails.fee %></h4> tk
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-6 mx-auto my-4">
+            <h5>Video lectures</h5>
+            <% for(let video of courseDetails.videos) { %>
+                <p ><%= video.title %> </p>
+            <% } %>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">Enroll In Course</button>
+        </div>
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        
+        <div class="modal-body">
+            <p class="fs-4 text text-primary">Please pay <%= courseDetails.fee %> to enroll in the class. </p>
+            <p>Click pay to open the payment gateway and Enter your email, credit card number, date of birth and card CVC to complete payment.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modal-close-btn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-primary" type="button" id="checkout-button">Open Payment Gateway</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <script src="https://js.stripe.com/v3/"></script>
+        
+  <script> 
+    var stripe = Stripe("pk_test_51IPRcBCDcOy31yBpovE4uHPRIHz5jcUEPgPjoKxF9nHCispnKLCC4gxJ7QsCyInsOoQdCYTZZQjkFfrIayuyDlDc00TqGxL4SZ");
+    var checkoutButton = document.getElementById("checkout-button");
+    checkoutButton.addEventListener("click", function () {
+      let classId = {classId: "<%= courseDetails._id %>"}
+      fetch("/student/create-checkout-session", {
+        method: "POST", 
+        headers: {
+         'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(classId)
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (session) {
+          return stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .then(function (result) {
+          if (result.error) {
+            let stripeErrorDiv = document.querySelector('.stripe-error')
+            stripeErrorDiv.insertAdjacentHTML('afterbegin', '<div class="alert alert-warning alert-dismissible fade show" role="alert">Error opening payment gateway<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>')
+            document.querySelector('#modal-close-btn').click()
+        }
+        })
+        .catch(function (error) {
+          console.error("Error:", error);
+          let stripeErrorDiv = document.querySelector('.stripe-error')
+          stripeErrorDiv.insertAdjacentHTML('afterbegin', '<div class="alert alert-warning alert-dismissible fade show" role="alert">Error opening payment gateway<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>')
+          document.querySelector('#modal-close-btn').click()
+        });
+    });
+
+  </script>
+
+
+
+
+
+
+<%- include('../partials/footer.ejs') %>

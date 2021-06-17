@@ -1,76 +1,88 @@
 <%- include('../partials/header.ejs') -%>
-<%- include('./partials/tutorNav.ejs') %> 
+<%- include('./partials/tutorNav.ejs') %>
 
-<link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
+<script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
 
 
-<div class="container">
-<div class="row">
-    <div class="col-sm-4 p-5">
-        <div class="d-grid gap-3">
-        <% for(let video of courseDetails.videos) { %> 
-            <button class="btn-title btn btn-outline-primary" data-path="<%= video.path %>" type="button"><%= video.title %> </button>
-        <% } %> 
+<div class="container-fluid p-5">
+    <div class="row">
+        <div class="col-sm-4 p-5">
+            <h5 class="mb-3 text-center">Video Lectures</h5>
+            <div class="d-grid gap-3">
+                <% for(let video of courseDetails.videos) { %>
+                <button class="btn-title btn btn-outline-dark" data-path="<%= video.path %>"
+                    type="button"><%= video.title %> </button>
+                <% } %>
+            </div>
+        </div>
+        <div class="col-sm-8 p-5">
+
+
+            <video id="video-player">
+                <source src="video.mp4" type="video/mp4" />
+            </video>
+
         </div>
     </div>
-    <div class="col-sm-8 p-5">
-
-
-    <video
-    id="my-video"
-    class="video-js"
-    controls
-    preload="auto"
-    width="900"
-    height="600"
-    poster="MY_VIDEO_POSTER.jpg"
-    data-setup="{}">
-        <source src="/uploads/course/Course_Video-1623662772594-Introduction_to this_course.mp4" type="video/mp4" />
-        <p class="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a
-            web browser that
-            <a href="https://videojs.com/html5-video-support/" target="_blank"
-                >supports HTML5 video</a
-            >
-        </p>
-    </video>
-
-    
-
-    </div>
 </div>
-</div>
-
-
-
 
 
 <script>
-    window.onload = function(){
-        let firstTitle = document.querySelector('.btn-title');
-        firstTitle.click();
-    }
+    var myFP = fluidPlayer(
+            'video-player', 
+            {
+                "layoutControls": 
+                {
+                    "controlBar": {
+                        "autoHideTimeout": 3,
+                        "animated": true,
+                        "autoHide": true
+                    },
+                    "htmlOnPauseBlock": {
+                        "html": null,
+                        "height": null,
+                        "width": null
+                    },
+                    "autoPlay": true,
+                    "mute": false,
+                    "allowTheatre": true,
+                    "playPauseAnimation": true,
+                    "playbackRateEnabled": true,
+                    "allowDownload": true,
+                    "playButtonShowing": true,
+                    "fillToContainer": true,
+                    "posterImage": ""
+                },
+                "vastOptions": {
+                    "adList": [],
+                    "adCTAText": false,
+                    "adCTATextPosition": ""
+                }
+            }
+        );
+
+                window.onload = function () {
+                    let firstTitle = document.querySelector('.btn-title');
+                    firstTitle.click();
+                }
 
 
-    let titles = document.querySelectorAll('.btn-title');
-    [...titles].forEach(element => {
-        element.addEventListener('click', ()=>{
-            console.log('hello');
-            let path = element.dataset.path;
-            let video = document.getElementById('my-video_html5_api');
-            let source = video.querySelector('source');
-            source.setAttribute('src', '/'+path);
-            video.setAttribute('src', '/'+path);
-            video.load();
-            video.play();
+                let titles = document.querySelectorAll('.btn-title');
+                [...titles].forEach(element => {
+                    element.addEventListener('click', () => {
+                        console.log('hello');
+                        let path = element.dataset.path;
+                        let video = document.getElementById('video-player');
+                        let source = video.querySelector('source');
+                        source.setAttribute('src', '/' + path);
+                        video.setAttribute('src', '/' + path);
+                        video.load();
+                        video.play();
 
-            [...titles].forEach(btn => {
-                btn.classList.replace('btn-primary', 'btn-outline-primary')
-            });
-            element.classList.replace('btn-outline-primary', 'btn-primary')
-        })
-    });
+                        [...titles].forEach(btn => {
+                            btn.classList.replace('btn-dark', 'btn-outline-dark')
+                        });
+                        element.classList.replace('btn-outline-dark', 'btn-dark')
+                    })
+                });
 </script>
-
-<script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
-

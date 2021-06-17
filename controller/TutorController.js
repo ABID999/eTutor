@@ -75,17 +75,13 @@ exports.loginPostController = async (req, res, next) => {
         });
 
         if (!tutor) {
-            res.json({
-                message: "Invalid credintials",
-            });
+            return res.render('tutor/login', {value: {email, password}, error: error.mapped()})
         }
 
         let match = await bcrypt.compare(password, tutor.password);
 
         if (!match) {
-            res.json({
-                message: "Invalid credentials",
-            });
+            return res.render('tutor/login', {value: {email, password}, error: error.mapped()})
         }
         req.session.isLoggedIn = true
         req.session.user = tutor
@@ -104,8 +100,35 @@ exports.loginPostController = async (req, res, next) => {
     }
 };
 
-exports.dashboardGetController = (req, res, next) => {
-    res.render('tutor/dashboard')
+
+exports.dashboardGetController = async (req, res, next) => {
+
+    try{
+        let tutor = req.user._id
+        let enrolledClasses = await EnrolledClass.find({tutor: tutor})
+
+        for(let enrolledClass of enrolledClasses){
+            let classDetails = await Class.findOne({_id: enrolledClass.enrolledClass})
+            let tutor = await Tutor.findOne({_id: enrolledClass.tutor})
+            let attendee = await Student.findOne({_id: enrolledClass.studnet})
+            enrolledClass.attendee = attendee
+            enrolledClass.tutorName = tutor.name;
+            enrolledClass.title = classDetails.title;
+        }
+        enrolledClasses = enrolledClasses.slice(0,2)
+
+        let classes = await Class.find({tutor: tutor})
+        classes =classes.slice(0,2)
+
+        let courses = await Course.find({tutor: tutor})
+        courses =courses.slice(0,2)
+
+        res.render('tutor/dashboard',{classes, enrolledClasses, courses, alert: {}})        
+
+    }catch(e){
+        console.log(e)
+        res.render('tutor/dashboard', {classes:{}, enrolledClasses:{}, courses:{}, alert: {message:'Failed to get contents.', status: 'warning'}})
+    }
 }
 
 exports.logoutController = (req, res, next) => {

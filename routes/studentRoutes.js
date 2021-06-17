@@ -17,7 +17,10 @@ const {
     unenrollGetController,
     paymentSuccessController,
     paymentCancelController, 
-    joinLiveClass
+    joinLiveClass,
+    coursesGetController,
+    courseDetailsGetController,
+    coursePlayerGetController
 } = require('../controller/StudentController')
 const {
     isAuthenticatedStudent,
@@ -63,11 +66,15 @@ router.get('/logout', logoutController)
 router.get('/dashboard', isAuthenticatedStudent, dashboardGetController)
 router.get('/classes', isAuthenticatedStudent, classesGetController)
 router.get('/class/:id', isAuthenticatedStudent, classDetailsGetController)
-router.get('/search_classes', isAuthenticatedStudent, searchClassesGetController)
 router.get('/tutor_details/:id', isAuthenticatedStudent, tutorDetailsGetController)
-
 router.get('/enrolled_classes', isAuthenticatedStudent, enrolledClassesGetController)
 router.get('/unenroll/:id', isAuthenticatedStudent, unenrollGetController)
+
+router.get('/search_classes', isAuthenticatedStudent, searchClassesGetController)
+
+router.get('/courses', isAuthenticatedStudent, coursesGetController)
+router.get('/course/:id', isAuthenticatedStudent, courseDetailsGetController)
+router.get('/course_player/:id',isAuthenticatedStudent, coursePlayerGetController)
 
 router.get('/payment/cancel/:id', isAuthenticatedStudent, paymentCancelController)
 router.get('/payment/success/:id', isAuthenticatedStudent, enrollGetController)

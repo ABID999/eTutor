@@ -1,10 +1,8 @@
 <%- include('../partials/header.ejs') -%>
 
-
-<div class="mt-5">
-   
+<div>
     <div class="container mt-5">
-        <h2 class="mb-8 text-center">E-Tutor</h3>
+        <h1 class="mb-8 text-center"><a class="text-decoration-none" href="/">E-Tutor</a></h1>
         <div class="card p-5 col-md-5 m-auto">
             <h3 class="mb-8 text-center">Tutor Login</h3>
 
@@ -26,12 +24,12 @@
                         name="password" placeholder="Password" value="<%= value.password && value.password %>" />
                 </div>
                 <div class="text-center">
-                <button type="submit" class="btn btn-success">Sign In</button>
+                <button type="submit" class="btn btn-success mt-3 mb-3">Sign In</button>
                 </div>
             </form>
 
 
-            <div class="text-grey-dark mt-6">
+            <div class="text-grey-dark mt-6 text-center">
                 Do not have an account?
                 <a class="no-underline border-b border-blue text-blue" href="/tutor/register">
                     Sign up now!

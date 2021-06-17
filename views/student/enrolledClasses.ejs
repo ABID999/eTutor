@@ -3,7 +3,7 @@
 
 <%- include('../partials/alert.ejs') -%>
 
-<h2 class="text-center mb-3">Enrolled Classes</h2>
+<h3 class="text-center mb-3">Enrolled Classes</h3>
 
 
     <div class="container">
@@ -66,6 +66,39 @@
                 <% } %> 
             <% } %> 
         </div>
+
+        <h3 class="text-center mb-3">Enrolled Courses</h3>
+
+        <div class="row"> 
+
+            
+
+            <% if(enrolledCourses.length === 0) {%>
+                <h5 class="text-center">You are not enrolled in any courses right now.</h5>
+            <% } else { %>  
+                <% for(let courseDetails of enrolledCourses){ %> 
+                    <div class="col-md-4 mb-5">
+                        <div class="card m-auto" style="width: 18rem;">
+                            <img src="/<%= courseDetails.banner || 'images/placeholder.jpg'%> " class="card-img-top img-fluid" style="width: 286px; height: 160px;" alt="...">
+                            <div class="card-body">
+                            <h5 class="card-title"><%= courseDetails.title %> </h5>
+                            <p class="card-text"><%= courseDetails.description.substring(0,120) %> </p>
+                            <p>Taught by: <span><%= courseDetails.tutorName %></span></p>
+                            <a href="/student/course_player/<%= courseDetails._id %> " class="btn btn-sm btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                <% } %> 
+            <% } %> 
+        </div>
+
+
+
+
+
+
+
+
     </div>
 
 

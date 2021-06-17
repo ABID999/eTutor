@@ -1,0 +1,88 @@
+<%- include('../partials/header.ejs') -%>
+<%- include('./partials/studentNav.ejs') %>
+
+<script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
+
+
+<div class="container-fluid p-5">
+    <div class="row">
+        <div class="col-sm-4 p-5">
+            <h5 class="mb-3 text-center"><%= courseDetails.title %> Video Lectures</h5>
+            <div class="d-grid gap-3">
+                <% for(let video of courseDetails.videos) { %>
+                <button class="btn-title btn btn-outline-dark" data-path="<%= video.path %>"
+                    type="button"><%= video.title %> </button>
+                <% } %>
+            </div>
+        </div>
+        <div class="col-sm-8 p-5">
+
+
+            <video id="video-player">
+                <source src="video.mp4" type="video/mp4" />
+            </video>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var myFP = fluidPlayer(
+            'video-player', 
+            {
+                "layoutControls": 
+                {
+                    "controlBar": {
+                        "autoHideTimeout": 3,
+                        "animated": true,
+                        "autoHide": true
+                    },
+                    "htmlOnPauseBlock": {
+                        "html": null,
+                        "height": null,
+                        "width": null
+                    },
+                    "autoPlay": true,
+                    "mute": false,
+                    "allowTheatre": true,
+                    "playPauseAnimation": true,
+                    "playbackRateEnabled": true,
+                    "allowDownload": true,
+                    "playButtonShowing": true,
+                    "fillToContainer": true,
+                    "posterImage": ""
+                },
+                "vastOptions": {
+                    "adList": [],
+                    "adCTAText": false,
+                    "adCTATextPosition": ""
+                }
+            }
+        );
+
+                window.onload = function () {
+                    let firstTitle = document.querySelector('.btn-title');
+                    firstTitle.click();
+                }
+
+
+                let titles = document.querySelectorAll('.btn-title');
+                [...titles].forEach(element => {
+                    element.addEventListener('click', () => {
+                        console.log('hello');
+                        let path = element.dataset.path;
+                        let video = document.getElementById('video-player');
+                        let source = video.querySelector('source');
+                        source.setAttribute('src', '/' + path);
+                        video.setAttribute('src', '/' + path);
+                        video.load();
+                        video.play();
+
+                        [...titles].forEach(btn => {
+                            btn.classList.replace('btn-dark', 'btn-outline-dark')
+                        });
+                        element.classList.replace('btn-outline-dark', 'btn-dark')
+                    })
+                });
+</script>

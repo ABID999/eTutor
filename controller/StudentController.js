@@ -7,8 +7,10 @@ const { v4: uuidV4 } = require('uuid')
 
 const Student = require("../models/Student")
 const Class = require('../models/Class')
+const Course = require('../models/Course')
 const Tutor = require('../models/Tutor')
 const EnrolledClass = require('../models/EnrolledClass')
+const EnrolledCourse = require('../models/EnrolledCourse')
 const errorFormatter = require('../utils/validationFormatter')
 
 //const passport = require('../passport')
@@ -221,24 +223,35 @@ exports.searchClassesGetController = async (req, res, next) => {
     }
 }
 
-//todo: make sucere
+
 
 exports.enrollGetController = async (req, res, next) => {
     let classId = req.params.id
     try{
         let enrolledClass = await Class.findOne({_id: classId})
+        let enrolledCourse = await Course.findOne({_id: classId})
         let student = req.user._id
-        let tutor = enrolledClass.tutor
-        let roomId = uuidV4()
-        let tutorDetails = await Tutor.findOne({_id: tutor})
+        if(enrolledClass){
+            let tutor = enrolledClass.tutor
+            let roomId = uuidV4()
 
-        let enrolledClassObj = new EnrolledClass({
-            enrolledClass: classId,
-            student,
-            tutor,
-            roomId
-        })
-        let createdObj = await enrolledClassObj.save()
+            let enrolledClassObj = new EnrolledClass({
+                enrolledClass: classId,
+                student,
+                tutor,
+                roomId
+            })
+            let createdObj = await enrolledClassObj.save()
+        }else if(enrolledCourse){
+            let tutor = enrolledCourse.tutor
+
+            let enrolledCourseObj = new EnrolledCourse({
+                enrolledCourse: classId,
+                student,
+                tutor,
+            })
+            let createdObj = await enrolledCourseObj.save()
+        }
         res.redirect('/student/enrolled_classes')
     }catch(e){
         console.log(e)
@@ -253,21 +266,34 @@ exports.enrolledClassesGetController = async (req, res, next) => {
     try{
         let student = req.user._id
         let enrolledClasses = await EnrolledClass.find({student: student})
-
-        for(let enrolledClass of enrolledClasses){
-            let classDetails = await Class.findOne({_id: enrolledClass.enrolledClass})
-            let tutor = await Tutor.findOne({_id: enrolledClass.tutor})
-            let attendee = await Student.findOne({_id: enrolledClass.studnet})
-            enrolledClass.attendee = attendee
-            enrolledClass.tutorName = tutor.name;
-            enrolledClass.title = classDetails.title;
+        if(enrolledClasses){
+            for(let enrolledClass of enrolledClasses){
+                let classDetails = await Class.findOne({_id: enrolledClass.enrolledClass})
+                let tutor = await Tutor.findOne({_id: enrolledClass.tutor})
+                let attendee = await Student.findOne({_id: enrolledClass.studnet})
+                enrolledClass.attendee = attendee
+                enrolledClass.tutorName = tutor.name;
+                enrolledClass.title = classDetails.title;
+            }
         }
 
-        res.render('student/enrolledClasses',{enrolledClasses, alert:{}})        
+        let enrolledCourses = await EnrolledCourse.find({student: student})
+        if(enrolledCourses){
+            for(let enrolledCourse of enrolledCourses){
+                let courseDetails = await Course.findOne({_id: enrolledCourse.enrolledCourse})
+                let tutor = await Tutor.findOne({_id: enrolledCourse.tutor})
+                enrolledCourse.tutorName = tutor.name;
+                enrolledCourse.title = courseDetails.title;
+                enrolledCourse.description = courseDetails.description;
+                enrolledCourse.banner = courseDetails.banner;
+            }
+        }
+
+        res.render('student/enrolledClasses',{enrolledClasses, enrolledCourses, alert:{}})        
 
     }catch(e){
         console.log(e)
-        res.render('student/enrolledClasses', {enrolledClasses:{},alert: {message:'Failed to get classes for this user'}})
+        res.render('student/enrolledClasses', {enrolledClasses:{}, enrolledCourses: {}, alert: {message:'Failed to get classes for this user'}})
     }
 
 }
@@ -313,5 +339,56 @@ exports.joinLiveClass = async (req, res, next) => {
     }catch(e){
         console.log(e)
         res.redirect('/student/enrolled_classes')
+    }
+}
+
+
+exports.coursesGetController = async (req, res, next) => {
+
+    try{
+        let courses = await Course.find()
+        for(let course of courses){
+            let tutor = await Tutor.findOne({_id: course.tutor})
+            course.tutorName = tutor.name;
+        }
+        res.render('student/courses',{courses,title: {header: 'All Courses'}, alert: {}})        
+
+    }catch(e){
+        console.log(e)
+        res.render('student/courses',{courses:{}, title:{},alert: {message:'Failed to get classes.', status: 'warning'}})
+    }
+
+
+}
+
+
+exports.courseDetailsGetController = async (req, res, next) => {
+
+    let courseId = req.params.id;
+    
+    try{
+        let courseDetails = await Course.findOne({_id: courseId})
+        let tutor = await Tutor.findOne({_id: courseDetails.tutor})
+        res.render('student/courseDetails', {courseDetails, tutor})
+    }catch(e){
+        console.log(e);
+        res.redirect('/student/courses')
+    }
+
+
+}
+
+
+
+exports.coursePlayerGetController = async (req, res, next) => {
+    let courseId = req.params.id;
+    
+    try{
+        let enrolledCourse = await EnrolledCourse.findOne({_id: courseId})
+        let courseDetails = await Course.findOne({_id: enrolledCourse.enrolledCourse})
+        res.render('student/coursePlayer', {courseDetails})
+    }catch(e){
+        console.log(e);
+        res.redirect('/student/courses')
     }
 }
